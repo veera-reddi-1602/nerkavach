@@ -7,6 +7,12 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
   <link rel="stylesheet" href="leaflet.css">
   <link rel="stylesheet" href="style.css">
+  <script>
+    // 🛡️ Global Popup & Alert Suppressor — Completely disables all native browser alert dialogs
+    window.alert = function(msg) { console.log('[Suppressed alert]:', msg); };
+    window.confirm = function() { return true; };
+    window.prompt = function() { return ''; };
+  </script>
 </head>
 <body>
   <!-- 🛡️ FULLSCREEN 3-SECOND STARTUP SPLASH SCREEN -->

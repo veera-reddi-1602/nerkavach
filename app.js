@@ -3,6 +3,11 @@
  * Multi-Channel Alert, Geotechnical AI, Leaflet GIS Map & Offline LoRa Mesh
  */
 
+// 🛡️ Global Popup & Alert Suppressor (Zero Browser Modals / Popups)
+window.alert = function(msg) { console.log('[Alert suppressed]:', msg); };
+window.confirm = function() { return true; };
+window.prompt = function() { return ''; };
+
 // Global App State
 const state = {
   mode: 'AUTOMATIC_ONLINE', // AUTOMATIC_ONLINE | AUTOMATIC_OFFLINE | MANUAL
@@ -3480,58 +3485,12 @@ window.submitCrowdsourceHazard = function(e) {
   showAppNotification(`✅ Hazard Report Verified!\n\nReporter: ${name}\nHazard: ${hazard}\nYOLOv8 Detection: Tension Crack (94.2% Conf)\nSHA-256 Block: 7f8a92b1... Immutable\nPoints Awarded: +10 Points 🎖️`);
 };
 
-// Notification Helper (Non-blocking HUD Toast — Zero Browser Alert Modals!)
+// Notification Helper — Silent Non-blocking (Zero Popups Everywhere!)
 function showAppNotification(msg) {
-  if (!msg) return;
-
-  // Trigger Android Bridge Native Toast if present
   if (window.AndroidBridge && typeof window.AndroidBridge.showToast === 'function') {
     window.AndroidBridge.showToast(msg);
   }
-
-  // Ensure Toast Container exists
-  let container = document.getElementById('hud-toast-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'hud-toast-container';
-    container.className = 'hud-toast-container';
-    document.body.appendChild(container);
-  }
-
-  // Create Toast Element
-  const toast = document.createElement('div');
-  toast.className = 'hud-toast';
-
-  // Extract leading emoji icon if present
-  let icon = '🛡️';
-  let cleanMsg = msg;
-  const emojiMatch = msg.match(/^([\uD800-\uDBFF][\uDC00-\uDFFF]|[\u2600-\u27BF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|[\p{Extended_Pictographic}])/u);
-  if (emojiMatch) {
-    icon = emojiMatch[0];
-    cleanMsg = msg.replace(emojiMatch[0], '').trim();
-  }
-
-  toast.innerHTML = `
-    <div class="hud-toast-icon">${icon}</div>
-    <div class="hud-toast-body">${cleanMsg}</div>
-    <button class="hud-toast-close" onclick="this.parentElement.remove()" title="Dismiss">✕</button>
-  `;
-
-  container.appendChild(toast);
-
-  // Animate in
-  requestAnimationFrame(() => {
-    toast.classList.add('visible');
-  });
-
-  // Auto-dismiss after 2.8 seconds
-  setTimeout(() => {
-    toast.classList.remove('visible');
-    toast.classList.add('hiding');
-    setTimeout(() => {
-      if (toast.parentElement) toast.remove();
-    }, 350);
-  }, 2800);
+  console.log('[Notification]', msg);
 }
 
 // ---------------- 📊 COMPARATIVE RISK BAR GRAPH & 🌦️ 48H LOCAL WEATHER PREDICTION ----------------
