@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>NER KAVACH 3.0 — Arunachal Pradesh Landslide Early Warning System</title>
-  <link rel="stylesheet" href="leaflet.css?v=3.2.1">
-  <link rel="stylesheet" href="style.css?v=3.2.1">
+  <link rel="stylesheet" href="leaflet.css?v=3.2.2">
+  <link rel="stylesheet" href="style.css?v=3.2.2">
   <script>
     // 🛡️ Global Popup & Alert Suppressor — Completely disables all native browser alert dialogs
     window.alert = function(msg) { console.log('[Suppressed alert]:', msg); };
@@ -1292,7 +1292,7 @@
 
   <!-- 🗺️ FULL-SCREEN IMMERSIVE EVACUATION ROUTE OVERLAY -->
   <div id="fullscreen-route-overlay" class="fullscreen-route-overlay hidden">
-    <!-- Floating Header with Back Arrow Button -->
+    <!-- Clean Header with Return Button (No Wasted Top Margin) -->
     <div class="fullscreen-route-header">
       <button type="button" class="btn-route-back" onclick="closeFullscreenRoute()" title="Return to Main Tab">
         <span class="back-arrow-icon">←</span>
@@ -1304,40 +1304,46 @@
       </div>
     </div>
 
-    <!-- Floating Quick Stats Ribbon -->
-    <div class="fullscreen-stats-ribbon">
-      <div class="fs-stat-item">
-        <span class="fs-stat-lbl" data-i18n="fs_stat_distance">📏 Total Distance</span>
-        <span id="fs-dist-val" class="fs-stat-val text-cyan">28.4 km</span>
-      </div>
-      <div class="fs-stat-item">
-        <span class="fs-stat-lbl" data-i18n="fs_stat_travel_time">⏱️ Travel Time</span>
-        <span id="fs-time-val" class="fs-stat-val text-green">45 mins</span>
-      </div>
-      <div class="fs-stat-item">
-        <span class="fs-stat-lbl" data-i18n="fs_stat_safety_index">🛡️ Safety Index</span>
-        <span id="fs-safety-val" class="fs-stat-val text-green">98.2% Safe</span>
-      </div>
-      <div class="fs-stat-item">
-        <span class="fs-stat-lbl" data-i18n="fs_stat_blocked_road">⛔ Blocked Road</span>
-        <span class="fs-stat-val text-red" data-i18n="fs_stat_avoided">Avoided</span>
-      </div>
-    </div>
+    <!-- Main Content Split (Map on Left + Command HUD on Right) -->
+    <div class="fullscreen-route-body">
+      <!-- Fullscreen Interactive Leaflet Map Container -->
+      <div id="fullscreen-telemetry-map" class="fullscreen-map-container"></div>
 
-    <!-- Fullscreen Interactive Leaflet Map Container -->
-    <div id="fullscreen-telemetry-map" class="fullscreen-map-container"></div>
-
-    <!-- Collapsible Bottom Landmarks & Evacuation Waypoints Drawer -->
-    <div id="fs-landmarks-sheet" class="fullscreen-landmarks-sheet">
-      <div class="sheet-header" onclick="toggleLandmarksDrawer()">
-        <div class="sheet-pill-handle"></div>
-        <div class="sheet-title-row">
-          <span class="sheet-title" data-i18n="fs_landmarks_title">📍 Route Landmarks & Evacuation Waypoints</span>
-          <span id="sheet-toggle-icon" class="sheet-toggle-icon">▲</span>
+      <!-- Right Command Side Panel / Mobile Bottom Sheet -->
+      <div class="fullscreen-route-sidebar">
+        <!-- Floating Quick Stats Ribbon -->
+        <div class="fullscreen-stats-ribbon">
+          <div class="fs-stat-item">
+            <span class="fs-stat-lbl" data-i18n="fs_stat_distance">📏 Total Distance</span>
+            <span id="fs-dist-val" class="fs-stat-val text-cyan">28.4 km</span>
+          </div>
+          <div class="fs-stat-item">
+            <span class="fs-stat-lbl" data-i18n="fs_stat_travel_time">⏱️ Travel Time</span>
+            <span id="fs-time-val" class="fs-stat-val text-green">45 mins</span>
+          </div>
+          <div class="fs-stat-item">
+            <span class="fs-stat-lbl" data-i18n="fs_stat_safety_index">🛡️ Safety Index</span>
+            <span id="fs-safety-val" class="fs-stat-val text-green">98.2% Safe</span>
+          </div>
+          <div class="fs-stat-item">
+            <span class="fs-stat-lbl" data-i18n="fs_stat_blocked_road">⛔ Blocked Road</span>
+            <span class="fs-stat-val text-red" data-i18n="fs_stat_avoided">Avoided</span>
+          </div>
         </div>
-      </div>
-      <div id="fs-landmarks-list" class="fs-landmarks-list">
-        <!-- Dynamically injected by app.js -->
+
+        <!-- Landmarks & Evacuation Waypoints Drawer -->
+        <div id="fs-landmarks-sheet" class="fullscreen-landmarks-sheet">
+          <div class="sheet-header" onclick="toggleLandmarksDrawer()">
+            <div class="sheet-pill-handle"></div>
+            <div class="sheet-title-row">
+              <span class="sheet-title" data-i18n="fs_landmarks_title">📍 Route Landmarks & Evacuation Waypoints</span>
+              <span id="sheet-toggle-icon" class="sheet-toggle-icon">▲</span>
+            </div>
+          </div>
+          <div id="fs-landmarks-list" class="fs-landmarks-list">
+            <!-- Dynamically injected by app.js -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1706,8 +1712,8 @@
   </div>
 
   <!-- Leaflet GIS Engine & Mobile Controller (Cache-Busted for Instant Updates) -->
-  <script src="leaflet.js?v=3.2.1"></script>
-  <script src="i18n.js?v=3.2.1"></script>
-  <script src="app.js?v=3.2.1"></script>
+  <script src="leaflet.js?v=3.2.2"></script>
+  <script src="i18n.js?v=3.2.2"></script>
+  <script src="app.js?v=3.2.2"></script>
 </body>
 </html>
