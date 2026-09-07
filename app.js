@@ -175,31 +175,14 @@ function initP2pMeshSystem() {
 
 // App Initialization
 document.addEventListener('DOMContentLoaded', async () => {
-  // 🛡️ Guaranteed Splash Screen Dismissal Timer
+  // ⚡ Instant 0ms App Launch — Dismiss Splash Immediately
   const dismissSplash = () => {
     const splashScreen = document.getElementById('app-splash-screen');
-    if (splashScreen && !splashScreen.dataset.dismissed) {
-      splashScreen.dataset.dismissed = 'true';
-      splashScreen.classList.add('splash-fade-out');
-      setTimeout(() => {
-        splashScreen.style.display = 'none';
-        const savedLang = localStorage.getItem('ner_kavach_language');
-        const langModal = document.getElementById('startup-language-modal');
-        if (!savedLang && langModal) {
-          langModal.classList.remove('hidden');
-          if (typeof window.selectStartupLanguage === 'function') {
-            window.selectStartupLanguage('en', false);
-          }
-        }
-        if (typeof window.requestAndApplyDeviceLocation === 'function') {
-          window.requestAndApplyDeviceLocation(true);
-        }
-      }, 500);
+    if (splashScreen) {
+      splashScreen.style.display = 'none';
     }
   };
-
-  // Schedule splash dismissal
-  setTimeout(dismissSplash, 2000);
+  dismissSplash();
 
   try {
     initLanguageSystem();
