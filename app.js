@@ -1056,84 +1056,15 @@ const SECTOR_ROUTES = {
 
 window.findSafestRouteToBaseCamp = function() {
   const btn = document.getElementById('calc-route-btn');
-  const modal = document.getElementById('route-finding-modal');
-  const progressFill = document.getElementById('route-progress-fill');
-  const statusText = document.getElementById('route-progress-status-text');
-  const pctText = document.getElementById('route-progress-pct-text');
-  const logBox = document.getElementById('route-finding-log');
-  
-  if (!btn || !modal) return;
-
+  const secData = SECTOR_ROUTES[state.selectedVillageId] || SECTOR_ROUTES.AR_01;
   const _t = (k, fb) => window.I18N ? window.I18N.t(k, fb) : fb;
 
-  btn.disabled = true;
-  btn.innerHTML = `<span>${_t('btn_computing_route', '⏳ Computing Safest Terrain Corridor...')}</span>`;
-
-  // Open Route Finding Animation Modal (4-5s high-tech operation)
-  modal.classList.remove('hidden');
-  if (progressFill) progressFill.style.width = '5%';
-  if (pctText) pctText.innerText = '5%';
-  if (statusText) statusText.innerText = _t('radar_step1_status', 'Initializing GIS Topography Engine...');
-  if (logBox) logBox.innerHTML = '';
-
-  const secData = SECTOR_ROUTES[state.selectedVillageId] || SECTOR_ROUTES.AR_01;
-
-  const steps = [
-    {
-      time: 600,
-      pct: '22%',
-      status: _t('radar_step1_status', 'Analyzing DEM Elevation & InSAR Slope Creep...'),
-      log: _t('radar_step1_log', `🛰️ [01/05] Querying SRTM 30m Digital Elevation Model & InSAR slope gradients for ${secData.sectorName}...`)
-    },
-    {
-      time: 1500,
-      pct: '48%',
-      status: _t('radar_step2_status', 'Evaluating Antecedent Rainfall & Soil Saturation...'),
-      log: _t('radar_step2_log', `🌧️ [02/05] Ingesting AWS real-time rainfall & soil pore-pressure saturation (${secData.sectorName} axis)...`)
-    },
-    {
-      time: 2500,
-      pct: '70%',
-      status: _t('radar_step3_status', 'Detecting Highway Blockades & Hazard Points...'),
-      log: _t('radar_step3_log', `⛔ [03/05] Hazard Detection: Active debris flow at NH-13 Baisakhi flagged as DANGEROUS / BLOCKED.`)
-    },
-    {
-      time: 3500,
-      pct: '88%',
-      status: _t('radar_step4_status', 'Calculating Multi-Criteria Risk-Cost Path...'),
-      log: _t('radar_step4_log', `🧮 [04/05] Running Dijkstra risk-weighted pathfinding avoiding unstable slopes to Fortified Base Camp...`)
-    },
-    {
-      time: 4300,
-      pct: '100%',
-      status: _t('radar_step5_status', 'Safest Route Locked (98.2% Safe)!'),
-      log: _t('radar_step5_log', `🛡️ [05/05] Optimal Evacuation Corridor Verified! Safety Index: ${secData.safetyIndex} | Distance: ${secData.distanceKm} | ETA: ${secData.travelTime}`)
-    }
-  ];
-
-  steps.forEach(st => {
-    setTimeout(() => {
-      if (progressFill) progressFill.style.width = st.pct;
-      if (pctText) pctText.innerText = st.pct;
-      if (statusText) statusText.innerText = st.status;
-      if (logBox) {
-        const item = document.createElement('div');
-        item.className = 'route-log-item active' + (st.pct === '100%' ? ' success' : '');
-        item.innerText = st.log;
-        logBox.appendChild(item);
-        logBox.scrollTop = logBox.scrollHeight;
-      }
-    }, st.time);
-  });
-
-  // After 4.8 seconds: complete search, hide modal, and reveal FULL-SCREEN immersive route overlay
-  setTimeout(() => {
-    modal.classList.add('hidden');
-    btn.disabled = false;
+  if (btn) {
     btn.innerHTML = `<span>${_t('btn_view_fullscreen', '🧭 View Full-Screen Route Map')}</span>`;
+  }
 
-    renderFullscreenRoute(secData);
-  }, 4800);
+  // Instant 0ms Full-Screen Evacuation Route Map Launch
+  renderFullscreenRoute(secData);
 };
 
 window.renderFullscreenRoute = function(secData) {
@@ -3222,18 +3153,6 @@ window.downloadEvacPDF = function() {
 
 // ---------------- 🏛️ GOVERNMENT & DISTRICT COLLECTOR SITUATION PDF DISPATCH ----------------
 window.generateAndSendGovPDF = function() {
-  const btn = document.getElementById('btn-generate-gov-pdf');
-  const btnText = document.getElementById('btn-gov-text');
-  const tracker = document.getElementById('gov-dispatch-tracker');
-  const progressFill = document.getElementById('dispatch-progress-fill');
-  const statusText = document.getElementById('dispatch-status-text');
-
-  if (!btn) return;
-
-  btn.disabled = true;
-  if (btnText) btnText.innerText = "⏳ Transmitting to DC Office & Govt HQ...";
-  if (tracker) tracker.classList.remove('hidden');
-
   const villages = (state.villages && state.villages.length) ? state.villages : ARUNACHAL_VILLAGES;
   const activeVillage = villages.find(v => v.id === state.selectedVillageId) || villages[0];
   const weatherData = WEATHER_48H_DATA[activeVillage.id] || WEATHER_48H_DATA['AR_01'];
@@ -3253,50 +3172,20 @@ window.generateAndSendGovPDF = function() {
   const prob = Math.min(0.99, Math.max(0.08, riskScore / 100.0));
   const isHighRisk = (prob >= 0.65);
 
-  // Progressive Simulated Transmission to Govt & Local DC
-  // Step 1 (0ms)
-  if (progressFill) progressFill.style.width = '25%';
-  if (statusText) statusText.innerText = (window.I18N ? window.I18N.t('dispatch_step1') : "📄 Compiling real-time weather telemetry & geotechnical risk index...");
+  // Instant 0ms Populate & Display Situation PDF
+  populateGovPdfDocument({
+    village: activeVillage,
+    weather: weatherData,
+    currentRain,
+    currentSlope,
+    currentSoil,
+    currentInsar,
+    riskScore,
+    prob,
+    isHighRisk
+  });
 
-  // Step 2 (1200ms)
-  setTimeout(() => {
-    if (progressFill) progressFill.style.width = '60%';
-    if (statusText) statusText.innerText = (window.I18N ? window.I18N.t('dispatch_step2') : "📡 Encrypting 48-Hour Disaster Prediction & transmitting to District Collector (DC Office)...");
-  }, 1200);
-
-  // Step 3 (2400ms)
-  setTimeout(() => {
-    if (progressFill) progressFill.style.width = '85%';
-    if (statusText) statusText.innerText = (window.I18N ? window.I18N.t('dispatch_step3') : "🏛️ Delivered to District Emergency Operations Centre (DEOC) & SDMA HQ!");
-  }, 2400);
-
-  // Step 4 (3600ms - Complete & Display PDF)
-  setTimeout(() => {
-    if (progressFill) progressFill.style.width = '100%';
-    if (statusText) statusText.innerText = (window.I18N ? window.I18N.t('dispatch_step4') : "✅ Dispatched to Government & Local District Collector successfully!");
-
-    if (window.AndroidBridge && typeof window.AndroidBridge.showToast === 'function') {
-      window.AndroidBridge.showToast("🏛️ Situation PDF Sent to Government & District Collector!");
-    }
-
-    populateGovPdfDocument({
-      village: activeVillage,
-      weather: weatherData,
-      currentRain,
-      currentSlope,
-      currentSoil,
-      currentInsar,
-      riskScore,
-      prob,
-      isHighRisk
-    });
-
-    setTimeout(() => {
-      btn.disabled = false;
-      if (btnText) btnText.innerText = (window.I18N ? window.I18N.t('btn_gov_dispatch') : "Generate Situation PDF & Send to District Collector / Govt");
-      openGovPdfModal();
-    }, 800);
-  }, 3600);
+  openGovPdfModal();
 };
 
 function populateGovPdfDocument(data) {
